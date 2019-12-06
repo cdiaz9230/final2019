@@ -1,7 +1,7 @@
 ---
 title: "Aides Drug"
-author: "Put your name here!"
-date: "put the date here"
+author: "celia diaz"
+date: "11/18/19"
 output: html_document
 ---
 
@@ -17,9 +17,38 @@ avast <-read.csv(file="avastivironal.csv",header=TRUE)
 
 A new  preventative aides (abacavirinol) is under test in clinical trials. Analyze the effectiveness of this drug across the board. Consider population subgroups by gender, drug use, and sexual orientation. Finish this!
 
+
+
+
 # Methods
 
 <!--Decide on your methods:  use "variable analysis" or other appropriate descriptors.  Make sure to choose at least one graphical method and at least one numerical method. Discuss what data manipulations may be needed for example subsetting or other binning procedures and what sort of graphical displays and inferential tools will be used!-->
+
+FOr each of the 5 tests, response is categorical, the factor variable is categorical so we..
+
+## Question 1: is the vaccine effective for the total population?
+$H_o$ the vaccine has no effect on whether one contracts aides or not
+$H_1$ the vaccine affects whether one contracts aids or not
+
+## Question 2:is the vaccine effective for the LGBTQ population?
+$H_o$ the vaccine has no effect on whether one contracts Aids or not
+$H-1$ the vaccine affect whether one contracts aids or not
+
+## Question 3: is the vaccine effective for drug users?
+$H_o$ the vaccine has no effect on whether one contracts aids or not
+$H_1$ the vaccine affects whether one contracts aids or not
+
+## Question 4: is the vaccine effective in men?
+$H_o$ the vaccine has no effect whether one contracts aids or not
+$H_1$ the vaccine affects whether one contracts aids or not
+
+## Question 5 is  the vaccine effective in females?
+$H_o$ the vaccine has no effect whether one contracts aids or not
+$H_1$ the vaccine affects whether one contracts aids or not
+
+
+
+
 
 #Results
 
@@ -27,19 +56,140 @@ A new  preventative aides (abacavirinol) is under test in clinical trials. Analy
 
 ## Descriptive Results
 
+
+
+
+
+
+
+
+
+
+
+
 ### Graphical Descriptive Results
 
 <!--Graphical results here.  Make sure to show your code.  Provide appropriate labels for axes, giving units if possible, and provide a good title for the graph, too.  Use the graphical results to describe the patterns if any that exist in the data as focused toward the research question. Bottom line is to explain the features of the graph that are relevant to conforming or departing to what is expected by your null hypothesis !-->
+
+```{r}
+barchartGC (~infected +treatment, data = avast,type = "percent",main ="total population")
+```
+
+This bar chart shows that for the total population the drug is working to prevent the aids infection since it is lower than that of the placebo group infected by aids.
+
+```{r}
+barchartGC(~infected + treatment, data = filter(avast, sex =='gal'), main = 'Women only', type = 'percent')
+
+```
+
+The bar chart shows that for women the drug is working to prevent the aids infection since 
+it is significantly higher than that of the placebo group.
+
+```{r}
+barchartGC(~infected + treatment, data = filter(avast, sex =='guy'), main = 'men only', type = 'percent')
+```
+
+The bar chart shows that for the men the drug group is higher, thus putting the men at an increased risk of contracting the aids infection.
+```
+
+```
+```{r}
+barchartGC(~infected + treatment, data = filter(avast, LGBTQ =='gay'), main = 'LGBTQ', type = 'percent')
+```
+The bar chart shows that for the LGBTQ community the drug group is higher, thus putting the LGBTQ community at an increased risk of contracting the aids infection.   
+
+
+
+```
+
+```
+
+```{r}
+barchartGC(~infected + treatment, data = filter(avast, DrugUser=='yes'), main = 'DrugUser', type = 'percent')
+```
+
+The bar graph shows that for drug users the drug group is lower thus the drug is working to prevent the AIDS infection.
+
+
+
+
+
+
+
 
 ### Numerical Descriptive Results
 
 <!--Numerical results go here. Use the numerical results to describe the patterns if any that exist in the data as focused toward the research question!-->
 
+
+```{r}
+LGBTQ = xtabs(~infected + treatment, data = filter(avast, LGBTQ =='gay'))
+rowPerc(LGBTQ)
+```
+The table shows that there is a 44% difference between the drug group and the placebo group. Thus putting the LGBTQ community at a higher risk of contracting the aids infection.
+
+```{r}
+females = xtabs(~infected + treatment, data = filter(avast, sex =="gal"))
+rowPerc(females)
+```
+The table shows that there is 37% difference between the placebo group and the drug users group. In this case the placebo group has a higher percentage.
+
+```{r}
+males = xtabs(~infected + treatment, data = filter(avast, sex == "guy"))
+rowPerc(males)          
+```
+The table shows that there is a 17% difference between the drug group and the placebo group.Thus placing the males at higher risk of becoming infected.
+
+```{r}
+DrugUser = xtabs(~infected + treatment, data = filter(avast, DrugUser == "yes"))
+rowPerc(DrugUser)        
+```
+The table shows that there is a 51% difference between the placebo group and the drug group. Thus putting the drug users at a lower risk of contracting the AIDS infection. 
+
+```{r}
+allPeople = xtabs (~infected +treatment, data = avast)
+rowPerc(allPeople)                   
+```
+This table shows that there is a 19% difference amongst the drug users and the placebo group. The placebo group is at a higher percentage than the drug user 
+
+
+
+
+
+
+
 ## Inferential Results
 
 <!--State hypothesis clearly.  Make sure your discussion of the inferential test covers all the aspects that the test output produces, such as test statistic, p-value etc.  Make a decision about the null hypothesis, explain the assumptions on which the selected test/procedure was based, and why the chosen procedure satisfys the assumptions and is appropriate to answer the research question!-->
+```{r}
+chisqtestGC(allPeople, data = avast)
+```
+The p-value is 0, < 0,05 so we reject the null hypothesis and conclude the vaccine is effective in preventing one from getting AIDS in the general population
 
+```{r}
+chisqtestGC(females, data = gals)
+
+```
+The p-value is 0, < 0,05 so we reject the null hypothesis and conclued the vaccine is effective in preventing one from getting AIDS in the female population.
+
+```{r}
+chisqtestGC(males, data = guy)
+```
+The p value is < 0.05 so we reject the null hypothesis and conclued the vaccine is effective in preventing one from getting AIDS in the male population.
+
+```{r}
+chisqtestGC(LGBTQ, data = gay)
+```
+The p-value is 0, < 0,05 so we reject the null hypothesis and conclude the vaccine is effective in preventing one from getting AIDS in the LGBTQ community.
+
+
+```{r}
+chisqtestGC(DrugUser, data = yes )
+```
+The p-value is 0, < 0,05 so we reject the null hypothesis and conclude the vaccine is effective in preventing the Drug users from getting AIDS.
 
 # Discussion and Conclusion
 
 <!--Discussion and conclusion here.  If you found a relationship be sure to consider whether the relationship occurs because one of the variavbles causes the other, or whether they perhasps are related for some other reason.  Watch the chapter 6 videos from the GeorgeTown videos collection.!-->
+
+In conclusion, between the female population, the total population, and the drug users the drug helped them in preventing the contraction of AIDS. However, in looking at the LGBTQ and male groups the drug put them at risk of contacting AIDS.  
